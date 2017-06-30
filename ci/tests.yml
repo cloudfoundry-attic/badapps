@@ -1,0 +1,16 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: cfgarden/grootfs-ci
+    tag: latest
+
+inputs:
+  - name: badapps-git-repo
+    path: src/code.cloudfoundry.org/badapps
+
+run:
+  path: src/code.cloudfoundry.org/badapps/ci/tests.sh
+  user: root
