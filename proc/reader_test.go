@@ -64,5 +64,20 @@ var _ = Describe("Reader", func() {
 				Expect(env).NotTo(HaveKey("wolf"))
 			})
 		})
+
+		Context("when trying to read the env for a process which no longer exists", func() {
+			It("does not fail", func() {
+				_, err := procReader.Env("666")
+				Expect(err).NotTo(HaveOccurred())
+			})
+		})
+
+		Context("when permission to read the proc dir is denied", func() {
+			It("does not fail", func() {
+				Expect(os.Chmod(filepath.Join(procPath, "100"), 0666))
+				_, err := procReader.Env("100")
+				Expect(err).NotTo(HaveOccurred())
+			})
+		})
 	})
 })

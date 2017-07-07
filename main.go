@@ -25,11 +25,6 @@ func main() {
 	for _, pid := range pids {
 		env, err := procReader.Env(pid)
 		if err != nil {
-			if os.IsPermission(errors.Cause(err)) {
-				fmt.Fprintf(os.Stderr, "WARNING: Permission denied to read %s/%s/environ. Ignoring\n", procPath, pid)
-				continue
-			}
-
 			exitWithError(errors.Wrapf(err, "Failed to read env for pid %s", pid))
 		}
 

@@ -1,6 +1,7 @@
 package proc
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -37,7 +38,7 @@ func (p Reader) Pids() ([]string, error) {
 func (p Reader) Env(pid string) (map[string]string, error) {
 	environ, err := ioutil.ReadFile(filepath.Join(p.procPath, pid, "environ"))
 	if err != nil {
-		return nil, errors.Wrapf(err, "Failed to read environ for pid %s", pid)
+		return nil, handleError(err)
 	}
 
 	envMap := make(map[string]string)
@@ -50,6 +51,18 @@ func (p Reader) Env(pid string) (map[string]string, error) {
 	}
 
 	return envMap, nil
+}
+
+func handleError(err error) error {
+	if os.IsNotExist(err) {
+		fmt.Fprintf(os.Stderr, "WARNING: %s. Ignoring non-fatal error.\n", err)
+		return nil
+	} else if os.IsPermission(err) {
+		fmt.Fprintf(os.Stderr, "WARNING: %s. Ignoring non-fatal-error.\n", err)
+		return nil
+	}
+
+	return err
 }
 
 func isNumeric(info os.FileInfo) bool {
