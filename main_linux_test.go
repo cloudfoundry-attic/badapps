@@ -65,12 +65,3 @@ var _ = Describe("Main", func() {
 		}))
 	})
 })
-
-func startApp(appName, appId string) *gexec.Session {
-	cmd := exec.Command("sleep", "1000")
-	cmd.Env = []string{fmt.Sprintf("VCAP_APPLICATION=%s", appEnvData(appName, appId))}
-	session, err := gexec.Start(cmd, GinkgoWriter, GinkgoWriter)
-	Expect(err).NotTo(HaveOccurred())
-
-	return session
-}
